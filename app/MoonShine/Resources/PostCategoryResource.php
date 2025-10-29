@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Resources;
 
+use Illuminate\Database\Eloquent\Model;
 use App\Models\PostCategory;
 
 use MoonShine\Laravel\Resources\ModelResource;
 use MoonShine\UI\Components\Layout\Box;
 use MoonShine\UI\Fields\ID;
+use MoonShine\Contracts\UI\FieldContract;
+use MoonShine\Contracts\UI\ComponentContract;
 use MoonShine\UI\Fields\Text;
 
 /**
@@ -18,47 +21,52 @@ class PostCategoryResource extends ModelResource
 {
     protected string $model = PostCategory::class;
 
-    public function getTitle(): string
-    {
-        return 'PostCategory';
-    }
+    protected string $title = 'Категории постов';
 
-    public function indexFields(): iterable
+    /**
+     * @return list<FieldContract>
+     */
+    protected function indexFields(): iterable
     {
         // TODO correct labels values
         return [
-			ID::make('post_category_id'),
-			Text::make('name', 'name'),
+            Text::make('name', 'name'),
         ];
     }
 
-    public function formFields(): iterable
+    /**
+     * @return list<ComponentContract|FieldContract>
+     */
+    protected function formFields(): iterable
     {
         return [
             Box::make([
-                ...$this->indexFields()
+                ...$this->indexFields(),
             ])
         ];
     }
 
-    public function detailFields(): iterable
+    /**
+     * @return list<FieldContract>
+     */
+    protected function detailFields(): iterable
     {
         return [
+            ID::make()->sortable(),
             ...$this->indexFields()
         ];
     }
 
-    public function filters(): iterable
+    /**
+     * @param PostCategory $item
+     *
+     * @return array<string, string[]|string>
+     * @see https://laravel.com/docs/validation#available-validation-rules
+     */
+    protected function rules(mixed $item): array
     {
         return [
-        ];
-    }
-
-    public function rules(mixed $item): array
-    {
-        // TODO change it to your own rules
-        return [
-			'name' => ['string', 'required'],
+            'name' => ['string', 'required'],
         ];
     }
 }

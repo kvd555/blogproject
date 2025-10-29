@@ -4,13 +4,20 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Resources;
 
+use App\Enums\PostStatusEnum;
+use Illuminate\Database\Eloquent\Model;
 use App\Models\Post;
 
 use MoonShine\Laravel\Resources\ModelResource;
 use MoonShine\UI\Components\Layout\Box;
+use MoonShine\UI\Components\Layout\Column;
+use MoonShine\UI\Components\Layout\Grid;
+use MoonShine\UI\Fields\Enum;
+use MoonShine\Contracts\UI\FieldContract;
+use MoonShine\Contracts\UI\ComponentContract;
 use MoonShine\UI\Fields\ID;
-use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Number;
+use MoonShine\UI\Fields\Text;
 
 /**
  * @extends ModelResource<Post>
@@ -19,56 +26,67 @@ class PostResource extends ModelResource
 {
     protected string $model = Post::class;
 
-    public function getTitle(): string
-    {
-        return 'Post';
-    }
+    protected string $title = 'Посты';
 
-    public function indexFields(): iterable
+    /**
+     * @return list<FieldContract>
+     */
+    protected function indexFields(): iterable
     {
-        // TODO correct labels values
         return [
-			ID::make('user_id'),
-			Text::make('title', 'title'),
-			Text::make('text', 'text'),
-			Number::make('post_category_id', 'post_category_id'),
-			Number::make('status', 'status'),
-			Text::make('image', 'image'),
+            Number::make('user_id', 'user_id'),
+            Text::make('title', 'title'),
+            Text::make('text', 'text'),
+            Number::make('post_category_id', 'post_category_id'),
+            Enum::make('Статус', 'status')
+                ->attach(PostStatusEnum::class)
+                ->default(PostStatusEnum::BrandNew),
+            Text::make('image', 'image'),
         ];
     }
 
-    public function formFields(): iterable
+    /**
+     * @return list<ComponentContract|FieldContract>
+     */
+    protected function formFields(): iterable
     {
         return [
-            Box::make([
-                ...$this->indexFields()
+            Grid::make([
+                Column::make([
+                    Box::make('Внесите новый пост',[
+                        ...$this->indexFields()
+                    ])
+                ]),
             ])
         ];
     }
 
-    public function detailFields(): iterable
+    /**
+     * @return list<FieldContract>
+     */
+    protected function detailFields(): iterable
     {
         return [
-            ...$this->indexFields()
+            ID::make()->sortable(),
+            ...$this->indexFields(),
         ];
     }
 
-    public function filters(): iterable
+    /**
+     * @param Post $item
+     *
+     * @return array<string, string[]|string>
+     * @see https://laravel.com/docs/validation#available-validation-rules
+     */
+    protected function rules(mixed $item): array
     {
-        return [
-        ];
-    }
-
-    public function rules(mixed $item): array
-    {
-        // TODO change it to your own rules
         return [
             'user_id' => ['int', 'required'],
-			'title' => ['string', 'required'],
-			'text' => ['string', 'required'],
-			'post_category_id' => ['int', 'nullable'],
-			'status' => ['int', 'required'],
-			'image' => ['string', 'required'],
+            'title' => ['string', 'required'],
+            'text' => ['string', 'required'],
+            'post_category_id' => ['int', 'nullable'],
+            'status' => ['int', 'required'],
+            'image' => ['string', 'required'],
         ];
     }
 }
