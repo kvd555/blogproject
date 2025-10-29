@@ -63,6 +63,7 @@ class PostResource extends ModelResource
     {
         // TODO change it to your own rules
         return [
+            'user_id' => ['int', 'required'],
 			'title' => ['string', 'required'],
 			'text' => ['string', 'required'],
 			'post_category_id' => ['int', 'nullable'],
