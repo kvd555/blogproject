@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Enums\PostStatusEnum;
+use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 
 class PostController extends Controller
 {
@@ -95,42 +95,15 @@ class PostController extends Controller
 
     /**
      * Update the specified resource in storage.
-     * @throws ValidationException
      */
-    public function update(Request $request, Post $post)
+    public function update(UpdatePostRequest $request, Post $post)
     {
-        $validator = Validator::make($request->all(), [
-            'id' => 'required|integer|exists:posts,id',
-            'category_id' => 'sometimes|integer|nullable',
-            'title' => 'sometimes|string|max:255|nullable',
-            'text' => 'sometimes|string|nullable',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        $id = $request->query('id');
-        $post = Post::find($id);
-
-        if (!$post) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Пост не найден'
-            ],404);
-        }
-
-        $validatedData = $validator->validated();
-
-        $post->fill($validatedData);
-        $post->save();
+        $post->update($request->validated());
 
         return response()->json([
             'success' => true,
-            'data' => $post
+            'message' => 'Пост успешно обновлен.',
+            'data' => $post->fresh() // Получаем обновленные данные поста
         ]);
     }
 
@@ -139,7 +112,6 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-
         $post->delete();
 
         return response()->json([

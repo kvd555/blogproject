@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\MoonShine\Resources;
 
 use App\Enums\PostStatusEnum;
-use Illuminate\Database\Eloquent\Model;
 use App\Models\Post;
 
 use MoonShine\CKEditor\Fields\CKEditor;
