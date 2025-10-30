@@ -8,6 +8,7 @@ use App\Enums\PostStatusEnum;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Post;
 
+use MoonShine\CKEditor\Fields\CKEditor;
 use MoonShine\Laravel\Resources\ModelResource;
 use MoonShine\UI\Components\Layout\Box;
 use MoonShine\UI\Components\Layout\Column;
@@ -16,6 +17,7 @@ use MoonShine\UI\Fields\Enum;
 use MoonShine\Contracts\UI\FieldContract;
 use MoonShine\Contracts\UI\ComponentContract;
 use MoonShine\UI\Fields\ID;
+use MoonShine\UI\Fields\Image;
 use MoonShine\UI\Fields\Number;
 use MoonShine\UI\Fields\Text;
 
@@ -36,12 +38,15 @@ class PostResource extends ModelResource
         return [
             Number::make('user_id', 'user_id'),
             Text::make('title', 'title'),
-            Text::make('text', 'text'),
+            CKEditor::make('text', 'text'),
             Number::make('post_category_id', 'post_category_id'),
             Enum::make('Статус', 'status')
                 ->attach(PostStatusEnum::class)
                 ->default(PostStatusEnum::BrandNew),
-            Text::make('image', 'image'),
+            Image::make('image', 'image')
+                ->dir('/')
+                ->disk('public')
+                ->allowedExtensions(['jpg', 'jpeg', 'png', 'gif'])
         ];
     }
 
@@ -86,7 +91,7 @@ class PostResource extends ModelResource
             'text' => ['string', 'required'],
             'post_category_id' => ['int', 'nullable'],
             'status' => ['int', 'required'],
-            'image' => ['string', 'required'],
+            'image' => ['nullable'],
         ];
     }
 }
