@@ -10,6 +10,7 @@ class PostCategory extends Model
 {
 	public $timestamps = false;
 
+    protected $table = 'post_categories';
     protected $fillable = [
 		'name',
     ];
