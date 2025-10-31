@@ -15,6 +15,7 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
             'id' => 'sometimes|required|integer',
             'user_id' => 'sometimes|required|integer',
@@ -61,6 +62,7 @@ class PostController extends Controller
             'data' => $posts,
         ]);
     }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -74,7 +76,43 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'title' => 'sometimes|required|string|max:255',
+            'text' => 'sometimes|required|string',
+            'post_category_id' => 'sometimes|required|integer',
+            'status' => 'sometimes|integer',
+            'image' => 'sometimes|string|nullable',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $validated = $validator->validated();
+
+        $userId = auth()->id();
+        /*
+        $user = Auth::user();
+        $post = $user->posts()->create($validated);
+        */
+
+        $post = Post::create([
+            'user_id' => $userId,
+            'title' => $validated['title'],
+            'text' => $validated['text'],
+            'post_category_id' => $validated['post_category_id'],
+            'status' => $validated['status'],
+            'image' => $validated['image']
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Товар добавлен',
+            'data' => $post
+        ]);
     }
 
     /**
@@ -98,12 +136,14 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
+        $this->authorize('update', $post);
+
         $post->update($request->validated());
 
         return response()->json([
             'success' => true,
             'message' => 'Пост успешно обновлен.',
-            'data' => $post->fresh() // Получаем обновленные данные поста
+            'data' => $post->fresh()
         ]);
     }
 
@@ -112,6 +152,8 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        $this->authorize('delete', $post);
+
         $post->delete();
 
         return response()->json([

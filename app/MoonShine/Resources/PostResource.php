@@ -57,7 +57,7 @@ class PostResource extends ModelResource
         return [
             Grid::make([
                 Column::make([
-                    Box::make('Внесите новый пост',[
+                    Box::make('Внесите новый пост', [
                         ...$this->indexFields()
                     ])
                 ]),
