@@ -93,11 +93,12 @@ class PostController extends Controller
 
         $validated = $validator->validated();
 
-        $userId = auth()->id();
-        /*
+        /* Альтернативный вариант покороче
         $user = Auth::user();
         $post = $user->posts()->create($validated);
         */
+
+        $userId = auth()->id();
 
         $post = Post::create([
             'user_id' => $userId,

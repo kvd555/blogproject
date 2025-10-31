@@ -15,6 +15,8 @@ class  Post extends Model
 
     protected $casts = [
         'status' => PostStatusEnum::class,
+        'created_at' => 'datetime:d.m.Y H:i',
+        'updated_at' => 'datetime:d.m.Y H:i',
     ];
 
     protected $fillable = [

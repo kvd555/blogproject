@@ -33,6 +33,7 @@ use MoonShine\UI\Components\{Breadcrumbs,
 use App\MoonShine\Resources\PostResource;
 use MoonShine\MenuManager\MenuItem;
 use App\MoonShine\Resources\PostCategoryResource;
+use App\MoonShine\Resources\UserResource;
 
 final class MoonShineLayout extends AppLayout
 {
@@ -49,6 +50,7 @@ final class MoonShineLayout extends AppLayout
             ...parent::menu(),
             MenuItem::make('Posts', PostResource::class),
             MenuItem::make('PostCategories', PostCategoryResource::class),
+            MenuItem::make('Users', UserResource::class),
         ];
     }
 

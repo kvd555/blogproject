@@ -15,7 +15,7 @@ class AuthController extends BaseController
     public function register(Request $request): JsonResponse {
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
+            'name' => 'required|string',
             'email' => 'required|email',
             'password' => 'required'
         ]);
@@ -43,7 +43,25 @@ class AuthController extends BaseController
             return $this->sendResponse($success, 'Успешный вход');
         }
         else{
-            return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
+            return $this->sendError('Unauthorised.', ['error'=>'Вы не авторизованы']);
         }
+    }
+    public function logout(Request $request)
+    {
+        $user = Auth::user();
+
+        if ($user) {
+            $user->currentAccessToken()->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Вы успешно вышли из системы.',
+            ], 200);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Не удалось выйти из системы / Пользователь не аутентифицирован.',
+        ], 401);
     }
 }

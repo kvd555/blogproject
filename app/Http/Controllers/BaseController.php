@@ -12,6 +12,10 @@ class BaseController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
+
+    //TODO Сделать общее наследование от базового контроллера
+    //TODO Пока только Auth
+
     public function sendResponse($result, $message)
     {
         $response = [

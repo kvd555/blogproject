@@ -9,6 +9,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/post/{post:id}', [PostController::class, 'update']);
     Route::delete('/post/{post:id}', [PostController::class, 'destroy']);
     Route::post('/post/', [PostController::class, 'store']);
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
 
 Route::middleware('guest')->group(function () {

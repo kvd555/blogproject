@@ -7,11 +7,14 @@ namespace App\MoonShine\Resources;
 use App\Enums\PostStatusEnum;
 use App\Models\Post;
 
+use Illuminate\Database\Eloquent\Model;
 use MoonShine\CKEditor\Fields\CKEditor;
+use MoonShine\Laravel\Enums\Action;
 use MoonShine\Laravel\Resources\ModelResource;
 use MoonShine\UI\Components\Layout\Box;
 use MoonShine\UI\Components\Layout\Column;
 use MoonShine\UI\Components\Layout\Grid;
+use MoonShine\UI\Fields\Date;
 use MoonShine\UI\Fields\Enum;
 use MoonShine\Contracts\UI\FieldContract;
 use MoonShine\Contracts\UI\ComponentContract;
@@ -35,14 +38,14 @@ class PostResource extends ModelResource
     protected function indexFields(): iterable
     {
         return [
-            Number::make('user_id', 'user_id'),
-            Text::make('title', 'title'),
-            CKEditor::make('text', 'text'),
-            Number::make('post_category_id', 'post_category_id'),
+            Number::make('ID автора', 'user_id'),
+            Text::make('Заголовок', 'title'),
+            CKEditor::make('Текст', 'text'),
+            Number::make('ID категории', 'post_category_id'),
             Enum::make('Статус', 'status')
                 ->attach(PostStatusEnum::class)
                 ->default(PostStatusEnum::BrandNew),
-            Image::make('image', 'image')
+            Image::make('Изображение', 'image')
                 ->dir('/')
                 ->disk('public')
                 ->allowedExtensions(['jpg', 'jpeg', 'png', 'gif'])
@@ -73,6 +76,8 @@ class PostResource extends ModelResource
         return [
             ID::make()->sortable(),
             ...$this->indexFields(),
+            Date::make('Создан', 'created_at')->format('d.m.Y H:i')->sortable(),
+            Date::make('Обновлён', 'updated_at')->format('d.m.Y H:i')->sortable(),
         ];
     }
 

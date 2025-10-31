@@ -28,9 +28,8 @@ class PostCategoryResource extends ModelResource
      */
     protected function indexFields(): iterable
     {
-        // TODO correct labels values
         return [
-            Text::make('name', 'name'),
+            Text::make('Название', 'name'),
         ];
     }
 
